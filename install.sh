@@ -9,7 +9,7 @@ echo "=====> Installiing Oracle Java 8"
 sleep 3
 mkdir -p /usr/lib/jvm/java
 ln -s /usr/lib/jvm/java /usr/lib/jvm/oracle_jdk8
-/bin/tar -zxvf /opt/install/jdk-8u45-linux-x64.gz -C /usr/lib/jvm/oracle_jdk8 --strip-components=1
+/bin/tar -zxvf /opt/install/jdk-8u71-linux-x64.tar.gz -C /usr/lib/jvm/oracle_jdk8 --strip-components=1
 
 echo "export J2SDKDIR=/usr/lib/jvm/oracle_jdk8" > /etc/profile.d/oraclejdk.sh
 echo "export J2REDIR=/usr/lib/jvm/oracle_jdk8/jre" >> /etc/profile.d/oraclejdk.sh
@@ -22,10 +22,10 @@ cp -fv /opt/install/local_policy.jar /usr/lib/jvm/oracle_jdk8/jre/lib/security/l
 cp -fv /opt/install/US_export_policy.jar /usr/lib/jvm/oracle_jdk8/jre/lib/security/US_export_policy.jar
 
 echo ""
-echo "=====> Installing Jetty 9.2.10"
+echo "=====> Installing Jetty 9"
 sleep 3
 mkdir /opt/jetty
-/bin/tar -zxvf /opt/install/jetty.9.2.10.tar.gz -C /opt/jetty --strip-components=1
+/bin/tar -zxvf /opt/install/jetty-distribution-9.3.6.v20151106.tar.gz -C /opt/jetty --strip-components=1
 useradd -r -s /bin/false jetty
 
 echo "export JETTY_BASE=/opt/jetty/jetty-base" >> /etc/profile.d/oraclejdk.sh
@@ -33,11 +33,11 @@ echo "export JETTY_HOME=/opt/jetty" >> /etc/profile.d/oraclejdk.sh
 source /etc/profile.d/oraclejdk.sh
 
 echo ""
-echo "=====> Installing Shibboleth 3.1.1"
+echo "=====> Installing Shibboleth 3"
 sleep 3
-/bin/tar -zxvf /opt/install/shibboleth-identity-provider-3.1.2.tar.gz -C /opt/install
+/bin/tar -zxvf /opt/install/shibboleth-identity-provider-3.2.0.tar.gz -C /opt/install
 mkdir /opt/shibboleth-idp
-echo | /opt/install/shibboleth-identity-provider-3.1.2/bin/install.sh -Didp.src.dir=/opt/install/shibboleth-identity-provider-3.1.2 -Didp.target.dir=/opt/shibboleth-idp -Didp.keystore.password=passwd123 -Didp.sealer.password=passwd456 -Didp.host.name=shib.cybera.ca -Didp.scope=cybera.ca -Dentityid=https://shib.cybera.ca/idp/shibboleth
+echo | /opt/install/shibboleth-identity-provider-3.2.0/bin/install.sh -Didp.src.dir=/opt/install/shibboleth-identity-provider-3.2.0 -Didp.target.dir=/opt/shibboleth-idp -Didp.keystore.password=passwd123 -Didp.sealer.password=passwd456 -Didp.host.name=shibb.cybera.ca -Didp.scope=cybera.ca -Dentityid=https://shib.cybera.ca/idp/shibboleth
 
 sed -i '0,/# JETTY_HOME/{s/# JETTY_HOME/JETTY_HOME=\/opt\/jetty/}' /opt/jetty/bin/jetty.sh
 sed -i '0,/# JETTY_HOME/{s/# JETTY_BASE/JETTY_BASE=\/opt\/jetty\/jetty-base/}' /opt/jetty/bin/jetty.sh
