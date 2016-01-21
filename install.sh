@@ -25,7 +25,8 @@ echo ""
 echo "=====> Installing Jetty 9"
 sleep 3
 mkdir /opt/jetty
-/bin/tar -zxvf /opt/install/jetty-distribution-9.3.6.v20151106.tar.gz -C /opt/jetty --strip-components=1
+#/bin/tar -zxvf /opt/install/jetty-distribution-9.3.6.v20151106.tar.gz -C /opt/jetty --strip-components=1
+/bin/tar -zxvf /opt/install/jetty-distribution-9.2.13.v20150730.tar.gz -C /opt/jetty --strip-components=1
 useradd -r -s /bin/false jetty
 #mv /opt/jetty/demo-base /opt/jetty/jetty-base
 
