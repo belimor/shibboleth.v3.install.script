@@ -25,8 +25,8 @@ echo ""
 echo "=====> Installing Jetty 9"
 sleep 3
 mkdir /opt/jetty
-#/bin/tar -zxvf /opt/install/jetty-distribution-9.3.6.v20151106.tar.gz -C /opt/jetty --strip-components=1
-/bin/tar -zxvf /opt/install/jetty-distribution-9.2.13.v20150730.tar.gz -C /opt/jetty --strip-components=1
+/bin/tar -zxvf /opt/install/jetty-distribution-9.3.6.v20151106.tar.gz -C /opt/jetty --strip-components=1
+#/bin/tar -zxvf /opt/install/jetty-distribution-9.2.13.v20150730.tar.gz -C /opt/jetty --strip-components=1
 useradd -r -s /bin/false jetty
 #mv /opt/jetty/demo-base /opt/jetty/jetty-base
 
@@ -37,33 +37,45 @@ source /etc/profile.d/oraclejdk.sh
 echo ""
 echo "=====> Installing Shibboleth 3"
 sleep 3
-/bin/tar -zxvf /opt/install/shibboleth-identity-provider-3.1.2.tar.gz -C /opt/install
+#/bin/tar -zxvf /opt/install/shibboleth-identity-provider-3.1.2.tar.gz -C /opt/install
+/bin/tar -zxvf /opt/install/shibboleth-identity-provider-3.2.1.tar.gz -C /opt/install
 mkdir /opt/shibboleth-idp
-echo | /opt/install/shibboleth-identity-provider-3.1.2/bin/install.sh -Didp.src.dir=/opt/install/shibboleth-identity-provider-3.1.2 -Didp.target.dir=/opt/shibboleth-idp -Didp.keystore.password=passwd123 -Didp.sealer.password=passwd456 -Didp.host.name=shibboleth.ad.cybera.ca -Didp.scope=ad.cybera.ca -Dentityid=https://shibbboleth.ad.cybera.ca/idp/shibboleth
+echo | /opt/install/shibboleth-identity-provider-3.1.2/bin/install.sh -Didp.src.dir=/opt/install/shibboleth-identity-provider-3.1.2 -Didp.target.dir=/opt/shibboleth-idp -Didp.keystore.password=qwerty-123 -Didp.sealer.password=qwerty-123 -Didp.host.name=shibboleth.ad.cybera.ca -Didp.scope=ad.cybera.ca -Dentityid=https://shibbboleth.ad.cybera.ca/idp/shibboleth
 
 sed -i '0,/# JETTY_HOME/{s/# JETTY_HOME/JETTY_HOME=\/opt\/jetty/}' /opt/jetty/bin/jetty.sh
 sed -i '0,/# JETTY_HOME/{s/# JETTY_BASE/JETTY_BASE=\/opt\/jetty\/jetty-base/}' /opt/jetty/bin/jetty.sh
 sed -i 's/sleep 4/sleep 20/g' /opt/jetty/bin/jetty.sh
 
-cat > /opt/jetty/jetty-base/start.d/idp.ini <<EOF
-jetty.host=0.0.0.0
-jetty.https.port=443
-jetty.backchannel.port=9443
-jetty.backchannel.keystore.path=/opt/shibboleth-idp/credentials/idp-backchannel.p12
-jetty.backchannel.keystore.password=passwd123
-jetty.browser.keystore.password=paswd456
-jetty.backchannel.keystore.type=PKCS12
-jetty.browser.keystore.type=PKCS12
-jetty.context.path=/idp
-jetty.war.path=/opt/shibboleth-idp/war/idp.war
-jetty.jaas.path=conf/authn/jaas.config
-jetty.nonhttps.host=0.0.0.0
-jetty.nonhttps.port=80
-EOF
+#cat > /opt/jetty/jetty-base/start.d/idp.ini <<EOF
+#jetty.host=0.0.0.0
+#jetty.https.port=443
+#jetty.backchannel.port=9443
+#jetty.backchannel.keystore.path=/opt/shibboleth-idp/credentials/idp-backchannel.p12
+#jetty.backchannel.keystore.password=qwerty-123
+#jetty.browser.keystore.password=qwerty-123
+#jetty.backchannel.keystore.type=PKCS12
+#jetty.browser.keystore.type=PKCS12
+#jetty.context.path=/idp
+#jetty.war.path=/opt/shibboleth-idp/war/idp.war
+#jetty.jaas.path=conf/authn/jaas.config
+#jetty.nonhttps.host=0.0.0.0
+#jetty.nonhttps.port=80
+#EOF
 
 chown -R jetty:jetty /opt/jetty
 chown -R jetty:jetty /opt/shibboleth-idp
 
 ln -s /opt/jetty/bin/jetty.sh /etc/init.d/jetty
-ln -s /opt/jetty/bin/jetty.sh /etc/init.d/jetty
+
+
+#JKS recreation (default JKS - sealer.jks - created during installation doesn't work):
+#openssl genrsa -out idp.key 2048
+#openssl req -new -x509 -nodes -sha1 -days 7305 -key idp.key -out idp.crt
+###openssl pkcs12 -export -in idp.crt -inkey idp.key -out idp.p12
+
+
+
+
+
+
 
