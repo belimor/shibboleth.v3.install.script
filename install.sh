@@ -28,7 +28,6 @@ mkdir /opt/jetty
 /bin/tar -zxvf /opt/install/jetty-distribution-9.3.6.v20151106.tar.gz -C /opt/jetty --strip-components=1
 #/bin/tar -zxvf /opt/install/jetty-distribution-9.2.13.v20150730.tar.gz -C /opt/jetty --strip-components=1
 useradd -r -s /bin/false jetty
-#mv /opt/jetty/demo-base /opt/jetty/jetty-base
 
 echo "export JETTY_BASE=/opt/jetty/jetty-base" >> /etc/profile.d/oraclejdk.sh
 echo "export JETTY_HOME=/opt/jetty" >> /etc/profile.d/oraclejdk.sh
@@ -45,6 +44,8 @@ echo | /opt/install/shibboleth-identity-provider-3.1.2/bin/install.sh -Didp.src.
 sed -i '0,/# JETTY_HOME/{s/# JETTY_HOME/JETTY_HOME=\/opt\/jetty/}' /opt/jetty/bin/jetty.sh
 sed -i '0,/# JETTY_HOME/{s/# JETTY_BASE/JETTY_BASE=\/opt\/jetty\/jetty-base/}' /opt/jetty/bin/jetty.sh
 sed -i 's/sleep 4/sleep 20/g' /opt/jetty/bin/jetty.sh
+
+cp -R ./jetty-base /opt/jetty/jetty-base
 
 #cat > /opt/jetty/jetty-base/start.d/idp.ini <<EOF
 #jetty.host=0.0.0.0
@@ -67,13 +68,15 @@ chown -R jetty:jetty /opt/shibboleth-idp
 
 ln -s /opt/jetty/bin/jetty.sh /etc/init.d/jetty
 
+#keytool -list -v -keystore sealer.jks -storetype JCEKS
 
 #JKS recreation (default JKS - sealer.jks - created during installation doesn't work):
 #openssl genrsa -out idp.key 2048
 #openssl req -new -x509 -nodes -sha1 -days 7305 -key idp.key -out idp.crt
 ###openssl pkcs12 -export -in idp.crt -inkey idp.key -out idp.p12
+#keytool -storepasswd -keystore keystorename
 
-
+apt-get install ldap-utils -y
 
 
 
